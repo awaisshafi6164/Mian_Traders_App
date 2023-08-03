@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <EditText
+            android:id="@+id/newCategoryET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Add new category"
+            android:textSize="24sp"/>
+
+        <Button
+            android:id="@+id/saveCategoryBTN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/lavender_border"
+            android:layout_gravity="end"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

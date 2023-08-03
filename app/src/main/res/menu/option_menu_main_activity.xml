@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/refresh"
+        android:icon="@drawable/baseline_refresh_24"
+        android:title="Refresh"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/notification"
+        android:icon="@drawable/baseline_notifications_24"
+        android:title="Notification"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/make_pdf"
+        android:title="Make PDF"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/share_app"
+        android:title="Share App"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/about_us"
+        android:title="About Us"
+        app:showAsAction="never"/>
+
+</menu>

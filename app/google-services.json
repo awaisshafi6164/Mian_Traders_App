@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "262482951217",
+    "project_id": "mian-traders-9f052",
+    "storage_bucket": "mian-traders-9f052.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262482951217:android:33cedda64a5fb1a83ee910",
+        "android_client_info": {
+          "package_name": "com.example.miantraders"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "262482951217-g7tb5nmddp3qahlavqdijb9r33gnu6a7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPJcfaSNy80cMYuKZ4FeZDezoWDRHlhn4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "262482951217-g7tb5nmddp3qahlavqdijb9r33gnu6a7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
