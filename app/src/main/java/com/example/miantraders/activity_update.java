@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -56,9 +57,6 @@ public class activity_update extends AppCompatActivity {
     String name, code, price, perc, categ, imageUrl, key, oldImageUrl;
     Uri uri;
     DatabaseReference databaseReference;
-    StorageReference storageReference;
-
-    //AutoCompleteTextView update_auto_complete_txt;
     Spinner spinner;
     ArrayAdapter<String> adapterCategory;
     String categoryTemp;
@@ -67,6 +65,8 @@ public class activity_update extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
+
+        FirebaseMessaging.getInstance().subscribeToTopic("all");
 
         updateImage = findViewById(R.id.updateImage);
         updateButton = findViewById(R.id.updateButton);
@@ -151,35 +151,15 @@ public class activity_update extends AppCompatActivity {
                 } else {
                     updateDataWithoutImage();
                 }
-                makeNotification();
+
+                FcmNotificationsSender notificationsSender = new FcmNotificationsSender( "/topics/all",
+                        "ITEM #"+code+" is updated",
+                        "Kindly refresh the app to check updated item. Thanks",
+                        getApplicationContext(), activity_update.this);
+                notificationsSender.SendNotifications();
             }
         });
 
-    }
-
-    private void makeNotification() {
-        String chanelID = "CHANNEL_ID_NOTIFICATION";
-        String itemNumber = code;
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), chanelID);
-        notificationBuilder.setSmallIcon(R.drawable.baseline_notifications_24)
-                .setContentTitle("Item # "+itemNumber+" has been updated")
-                .setContentText("Kindly refresh the app before check item. Thanks")
-                .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = notificationManager.getNotificationChannel(chanelID);
-            if(notificationChannel == null){
-                int importance = NotificationManager.IMPORTANCE_HIGH;
-                notificationChannel = new NotificationChannel(chanelID, "Some Description", importance);
-                notificationChannel.setLightColor(R.color.lavender);
-                notificationChannel.enableVibration(true);
-                notificationManager.createNotificationChannel(notificationChannel);
-            }
-        }
-        notificationManager.notify(0, notificationBuilder.build());
     }
 
     public void saveData() {

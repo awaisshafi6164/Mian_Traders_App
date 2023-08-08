@@ -3,15 +3,10 @@ package com.example.miantraders;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,16 +49,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            if(ContextCompat.checkSelfPermission((MainActivity.this),
-                android.Manifest.permission.POST_NOTIFICATIONS) !=
-                PackageManager.PERMISSION_GRANTED){
-
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
-            }
-        }
 
         recyclerView = findViewById(R.id.recyclerView);
         searchView = findViewById(R.id.search);
@@ -119,20 +104,42 @@ public class MainActivity extends AppCompatActivity {
 
         ////////////Spinner Code Below
         ArrayList<String> spinnerCategory = CategoryManager.getCategoryList(this);
+
+// Check if "All" category is present in the spinnerCategory list
+        boolean hasAllCategory = false;
+        for (String category : spinnerCategory) {
+            if (category.equalsIgnoreCase("All")) {
+                hasAllCategory = true;
+                break;
+            }
+        }
+
+// If "All" category is not present, add it at position 0
+        if (!hasAllCategory) {
+            spinnerCategory.add(0, "All");
+        }
+
         spinner = findViewById(R.id.spinner);
-        adapterCategory = new ArrayAdapter<String>(this,R.layout.list_category,spinnerCategory);
+        adapterCategory = new ArrayAdapter<String>(this, R.layout.list_category, spinnerCategory);
         spinner.setAdapter(adapterCategory);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 spinnerCat = adapterView.getItemAtPosition(i).toString();
-                ArrayList<DataClass> spinnerList = new ArrayList<>();
-                for(DataClass dataClass: dataList){
-                    if(dataClass.getProductCategory().toLowerCase().contains(spinnerCat.toLowerCase())){
-                        spinnerList.add(dataClass);
+
+                if (spinnerCat.equalsIgnoreCase("All")) {
+                    // Show all data when "All" category is selected
+                    adapter.searchDataList((ArrayList<DataClass>) dataList);
+                } else {
+                    ArrayList<DataClass> spinnerList = new ArrayList<>();
+                    for (DataClass dataClass : dataList) {
+                        if (dataClass.getProductCategory().toLowerCase().contains(spinnerCat.toLowerCase())) {
+                            spinnerList.add(dataClass);
+                        }
                     }
+                    adapter.searchDataList(spinnerList);
                 }
-                adapter.searchDataList(spinnerList);
             }
 
             @Override
@@ -140,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 spinnerCat = null;
             }
         });
+
         ////////////////////////
 
         fab = findViewById(R.id.fab);
@@ -186,11 +194,16 @@ public class MainActivity extends AppCompatActivity {
     public void searchList(String text){
         ArrayList<DataClass> searchList = new ArrayList<>();
         for(DataClass dataClass: dataList){
-            if(dataClass.getProductName().toLowerCase().contains(text.toLowerCase()) && dataClass.getProductCategory().toLowerCase().contains(spinnerCat.toLowerCase()) ){
+            if( (dataClass.getProductName().toLowerCase().contains(text.toLowerCase())) || (dataClass.getProductCode().contains(text) ) && dataClass.getProductCategory().toLowerCase().contains(spinnerCat.toLowerCase()) ){
                 searchList.add(dataClass);
             }
         }
         adapter.searchDataList(searchList);
+    }
+
+    public void cat_manager(){
+        Intent intent = new Intent(this, activity_category_manager.class);
+        startActivity(intent);
     }
 
     @Override
@@ -199,7 +212,6 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.option_menu_main_activity,menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -213,16 +225,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
 
+            case R.id.cat_manager:
+                cat_manager();
+                return true;
+
             case R.id.make_pdf:
-//                Toast.makeText(this, "Make PDF Selected", Toast.LENGTH_SHORT).show();
                 return true;
 
             case R.id.share_app:
-//                Toast.makeText(this, "Share App Selected", Toast.LENGTH_SHORT).show();
                 return true;
 
             case R.id.about_us:
-//                Toast.makeText(this, "About Us Selected", Toast.LENGTH_SHORT).show();
+                Intent intent1 = new Intent(MainActivity.this, activity_about_us.class);
+                startActivity(intent1);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

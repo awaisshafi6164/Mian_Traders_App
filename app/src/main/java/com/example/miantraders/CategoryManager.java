@@ -3,9 +3,12 @@ package com.example.miantraders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CategoryManager {
     private static final String PREF_NAME = "CategoryPrefs";
@@ -24,14 +27,18 @@ public class CategoryManager {
         String categoryListJson = sharedPreferences.getString(CATEGORY_KEY, null);
 
         if (categoryListJson != null) {
-            Type type = new TypeToken<ArrayList<String>>() {}.getType();
-            return new Gson().fromJson(categoryListJson, type);
-        } else {
-            return new ArrayList<>();
+            try {
+                Type type = new TypeToken<ArrayList<String>>() {}.getType();
+                return new Gson().fromJson(categoryListJson, type);
+            } catch (JsonSyntaxException e) {
+                // If the data is not in JSON format, handle it here (optional)
+                e.printStackTrace();
+            }
         }
+        return new ArrayList<>();
     }
 
-    private static void saveCategoryList(Context context, ArrayList<String> categoryList) {
+    static void saveCategoryList(Context context, ArrayList<String> categoryList) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
