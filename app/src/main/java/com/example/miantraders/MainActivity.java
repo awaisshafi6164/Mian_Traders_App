@@ -230,6 +230,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.make_pdf:
+                Intent intentPDF = new Intent(MainActivity.this, activity_make_pdf.class);
+                startActivity(intentPDF);
                 return true;
 
             case R.id.share_app:
