@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
     FloatingActionButton fab;
     RecyclerView recyclerView;
     List<DataClass> dataList;
@@ -39,12 +38,11 @@ public class MainActivity extends AppCompatActivity {
     ValueEventListener eventListener;
     SearchView searchView;
     Spinner spinner;
+    //Spinner spinnerCatManager;
     ArrayAdapter<String> adapterCategory;
     String spinnerCat;
     MyAdapter adapter;
-
     AlertDialog dialog2;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         searchView = findViewById(R.id.search);
         searchView.clearFocus();
+        spinner = findViewById(R.id.spinner);
 
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this,1);
@@ -89,6 +88,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Display saved categories from firebase database into spinner
+        //spinnerCatManager = findViewById(R.id.spinnerManager);
+        databaseReference = FirebaseDatabase.getInstance().getReference("Category Manager");
+        databaseReference.child("categories").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> categoryList = new ArrayList<>();
+                for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
+                    String category = categorySnapshot.getValue(String.class);
+                    categoryList.add(category);
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, categoryList);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                //spinnerCatManager.setAdapter(adapter);
+                spinner.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "Database Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        //
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -119,9 +142,8 @@ public class MainActivity extends AppCompatActivity {
             spinnerCategory.add(0, "All");
         }
 
-        spinner = findViewById(R.id.spinner);
-        adapterCategory = new ArrayAdapter<String>(this, R.layout.list_category, spinnerCategory);
-        spinner.setAdapter(adapterCategory);
+        //adapterCategory = new ArrayAdapter<String>(this, R.layout.list_category, spinnerCategory);
+        //spinner.setAdapter(adapterCategory);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -129,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
                 spinnerCat = adapterView.getItemAtPosition(i).toString();
 
                 if (spinnerCat.equalsIgnoreCase("All")) {
-                    // Show all data when "All" category is selected
                     adapter.searchDataList((ArrayList<DataClass>) dataList);
                 } else {
                     ArrayList<DataClass> spinnerList = new ArrayList<>();
@@ -206,6 +227,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void all_cat_manager() {
+        Intent intent = new Intent(this, activity_all_category_manager.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -227,6 +253,10 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.cat_manager:
                 cat_manager();
+                return true;
+
+            case R.id.all_cat_manager:
+                all_cat_manager();
                 return true;
 
             case R.id.make_pdf:

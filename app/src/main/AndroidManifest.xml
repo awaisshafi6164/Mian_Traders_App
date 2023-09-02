@@ -9,10 +9,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
 
     <application
         android:allowBackup="true"
@@ -23,6 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MianTraders"
         tools:targetApi="31">
+        <activity
+            android:name=".activity_all_category_manager"
+            android:exported="false" />
         <activity
             android:name=".activity_make_pdf"
             android:exported="false" />

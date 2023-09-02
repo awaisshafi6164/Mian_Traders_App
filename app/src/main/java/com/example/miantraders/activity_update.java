@@ -35,8 +35,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -47,6 +50,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class activity_update extends AppCompatActivity {
 
@@ -60,6 +64,7 @@ public class activity_update extends AppCompatActivity {
     Spinner spinner;
     ArrayAdapter<String> adapterCategory;
     String categoryTemp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,22 +98,53 @@ public class activity_update extends AppCompatActivity {
                 }
         );
 
+        //Display saved categories from firebase database into spinner
+        databaseReference = FirebaseDatabase.getInstance().getReference("Category Manager");
+        databaseReference.child("categories").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> categoryList = new ArrayList<>();
+                for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
+                    String category = categorySnapshot.getValue(String.class);
+                    categoryList.add(category);
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(activity_update.this, android.R.layout.simple_spinner_item, categoryList);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+
+                // After populating the spinner, set the defaultCategory if available
+                Bundle bundle = getIntent().getExtras();
+                String defaultCategory = bundle.getString("Category");
+                int defaultCategoryPosition = categoryList.indexOf(defaultCategory);
+                if (defaultCategoryPosition != -1) {
+                    spinner.setSelection(defaultCategoryPosition);
+                    categoryTemp = defaultCategory;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(activity_update.this, "Database Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //
+
         ///////Spinner code Below
-        ArrayList<String> category = CategoryManager.getCategoryList(this);
-        spinner = findViewById(R.id.spinner);
-        adapterCategory = new ArrayAdapter<String>(this,R.layout.list_category,category);
-        spinner.setAdapter(adapterCategory);
+//        ArrayList<String> category = CategoryManager.getCategoryList(this);
+//        spinner = findViewById(R.id.spinner);
+//        adapterCategory = new ArrayAdapter<String>(this,R.layout.list_category,category);
+//        spinner.setAdapter(adapterCategory);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 categoryTemp = adapterView.getItemAtPosition(i).toString();
-//                Toast.makeText(activity_update.this, "Category: "+categoryTemp, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
                 categoryTemp = null;
-//                Toast.makeText(activity_update.this, "Category: "+categoryTemp, Toast.LENGTH_SHORT).show();
             }
         });
         ///////////////////////////
@@ -122,11 +158,12 @@ public class activity_update extends AppCompatActivity {
             updatePerc.setText(bundle.getString("Percentage"));
 
             String defaultCategory = bundle.getString("Category");
-            int defaultCategoryPosition = category.indexOf(defaultCategory);
-            if (defaultCategoryPosition != -1) {
-                spinner.setSelection(defaultCategoryPosition);
-                categoryTemp = defaultCategory;
-            }
+
+//            int defaultCategoryPosition = category.indexOf(defaultCategory);
+//            if (defaultCategoryPosition != -1) {
+//                spinner.setSelection(defaultCategoryPosition);
+//                categoryTemp = defaultCategory;
+//            }
 
             key = bundle.getString("Key");
             oldImageUrl = bundle.getString("Image");

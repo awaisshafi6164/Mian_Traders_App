@@ -15,6 +15,11 @@
         app:showAsAction="ifRoom"/>
 
     <item
+        android:id="@+id/all_cat_manager"
+        android:title="All Category Manager"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/cat_manager"
         android:title="Category Manager"
         app:showAsAction="never"/>

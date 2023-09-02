@@ -28,7 +28,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -47,6 +51,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 public class activity_upload extends AppCompatActivity {
 
@@ -57,6 +62,8 @@ public class activity_upload extends AppCompatActivity {
     String categoryTemp;
     String imageURL;
     Uri uri;
+
+    DatabaseReference databaseReference;
 
 //    AutoCompleteTextView auto_complete_txt;
     Spinner spinner;
@@ -77,6 +84,8 @@ public class activity_upload extends AppCompatActivity {
         productPriceET = findViewById(R.id.uploadPrice);
         productPercentageET = findViewById(R.id.uploadPercentage);
         saveButton = findViewById(R.id.saveButton);
+
+        spinner = findViewById(R.id.spinner);
 
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -111,22 +120,43 @@ public class activity_upload extends AppCompatActivity {
             }
         });
 
+        //Display saved categories from firebase database into spinner
+        databaseReference = FirebaseDatabase.getInstance().getReference("Category Manager");
+        databaseReference.child("categories").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> categoryList = new ArrayList<>();
+                for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
+                    String category = categorySnapshot.getValue(String.class);
+                    categoryList.add(category);
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(activity_upload.this, android.R.layout.simple_spinner_item, categoryList);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(activity_upload.this, "Database Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //
+
         ////////////Spinner Code Below
-        ArrayList<String> spinnerCategory = CategoryManager.getCategoryList(this);
-        spinner = findViewById(R.id.spinner);
-        adapterCategory = new ArrayAdapter<String>(this,R.layout.list_category,spinnerCategory);
-        spinner.setAdapter(adapterCategory);
+//        ArrayList<String> spinnerCategory = CategoryManager.getCategoryList(this);
+//
+//        adapterCategory = new ArrayAdapter<String>(this,R.layout.list_category,spinnerCategory);
+//        spinner.setAdapter(adapterCategory);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 categoryTemp = adapterView.getItemAtPosition(i).toString();
-//                Toast.makeText(activity_upload.this, "Category: "+categoryTemp, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
                 categoryTemp = null;
-//                Toast.makeText(activity_upload.this, "Category: "+categoryTemp, Toast.LENGTH_SHORT).show();
             }
         });
         ////////////////////////
@@ -242,22 +272,4 @@ public class activity_upload extends AppCompatActivity {
                 });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.option_menu_upload_activity,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.add_category:
-                dialog.show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-    }
 }
