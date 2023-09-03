@@ -222,11 +222,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.searchDataList(searchList);
     }
 
-    public void cat_manager(){
-        Intent intent = new Intent(this, activity_category_manager.class);
-        startActivity(intent);
-    }
-
     private void all_cat_manager() {
         Intent intent = new Intent(this, activity_all_category_manager.class);
         startActivity(intent);
@@ -249,10 +244,6 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 Intent intent = new Intent(MainActivity.this, MainActivity.class);
                 startActivity(intent);
-                return true;
-
-            case R.id.cat_manager:
-                cat_manager();
                 return true;
 
             case R.id.all_cat_manager:

@@ -19,6 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -189,9 +190,11 @@ public class activity_update extends AppCompatActivity {
                     updateDataWithoutImage();
                 }
 
+                String title = "ITEM #"+code+" is updated";
+                String body = "Kindly refresh the app to check updated item. Thanks";
                 FcmNotificationsSender notificationsSender = new FcmNotificationsSender( "/topics/all",
-                        "ITEM #"+code+" is updated",
-                        "Kindly refresh the app to check updated item. Thanks",
+                        title,
+                        body,
                         getApplicationContext(), activity_update.this);
                 notificationsSender.SendNotifications();
             }

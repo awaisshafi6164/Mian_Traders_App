@@ -31,9 +31,6 @@
             android:name=".activity_about_us"
             android:exported="false" />
         <activity
-            android:name=".activity_category_manager"
-            android:exported="false" />
-        <activity
             android:name=".activity_update"
             android:exported="false" />
         <activity

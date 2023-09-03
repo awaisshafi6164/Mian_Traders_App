@@ -27,7 +27,6 @@ import com.google.firebase.messaging.RemoteMessage;
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
      NotificationManager mNotificationManager;
-
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
@@ -69,13 +68,12 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 resultIntent,
                 PendingIntent.FLAG_IMMUTABLE);
 
-
         builder.setContentTitle(remoteMessage.getNotification().getTitle());
         builder.setContentText(remoteMessage.getNotification().getBody());
         builder.setContentIntent(pendingIntent);
         builder.setStyle(new NotificationCompat.BigTextStyle().bigText(remoteMessage.getNotification().getBody()));
         builder.setAutoCancel(true);
-        builder.setPriority(Notification.PRIORITY_DEFAULT);
+        builder.setPriority(Notification.PRIORITY_LOW);
 
         mNotificationManager =
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -89,14 +87,12 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             NotificationChannel channel = new NotificationChannel(
                     channelId,
                     "Channel human readable title",
-                    NotificationManager.IMPORTANCE_HIGH);
+                    NotificationManager.IMPORTANCE_LOW);
             mNotificationManager.createNotificationChannel(channel);
             builder.setChannelId(channelId);
         }
 
-
-
-// notificationId is a unique int for each notification that you must define
+        // notificationId is a unique int for each notification that you must define
         mNotificationManager.notify(100, builder.build());
 
 

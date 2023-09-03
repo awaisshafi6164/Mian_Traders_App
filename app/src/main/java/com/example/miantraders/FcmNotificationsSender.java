@@ -50,11 +50,7 @@ public class FcmNotificationsSender  {
             notiObject.put("title", title);
             notiObject.put("body", body);
             notiObject.put("icon", R.drawable.baseline_notifications_24); // enter icon that exists in drawable only
-
-
-
             mainObj.put("notification", notiObject);
-
 
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, postUrl, mainObj, new Response.Listener<JSONObject>() {
                 @Override
