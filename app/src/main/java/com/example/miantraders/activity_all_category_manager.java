@@ -195,7 +195,6 @@ public class activity_all_category_manager extends AppCompatActivity {
         }
     }
 
-
     private void updateCatETBTN_method() {
         String updatedCategory = updateCatET.getText().toString().trim().toLowerCase();
         String selectedCategory = spinnerCatManager.getSelectedItem().toString();
@@ -229,9 +228,6 @@ public class activity_all_category_manager extends AppCompatActivity {
         }
     }
 
-
-
-
     // Helper method to check if a category exists in the spinner
     private boolean categoryExists(String categoryName) {
         for (int i = 0; i < spinnerCatManager.getCount(); i++) {
@@ -241,6 +237,7 @@ public class activity_all_category_manager extends AppCompatActivity {
         }
         return false;
     }
+
     public void newCatETBTN_method(){
         String categoryText = newCatET.getText().toString().trim().toLowerCase();
 

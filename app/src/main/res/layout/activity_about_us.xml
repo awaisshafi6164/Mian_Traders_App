@@ -80,4 +80,42 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Increase"
+        android:id="@+id/incBTN"/>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="56dp"
+            android:layout_height="54dp"
+            android:backgroundTint="@color/lavender"
+            android:src="@drawable/baseline_notifications_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.115" />
+
+        <com.nex3z.notificationbadge.NotificationBadge
+            android:id="@+id/badgeAboutUs"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            app:layout_constraintBottom_toBottomOf="@id/imageButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.54"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/imageButton"
+            app:layout_constraintVertical_bias="0.105"
+            app:nbMaxTextLength="2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </LinearLayout>

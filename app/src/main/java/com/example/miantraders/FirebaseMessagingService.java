@@ -16,21 +16,34 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 
+import com.github.arturogutierrez.Badges;
+import com.github.arturogutierrez.BadgesNotSupportedException;
 import com.google.firebase.messaging.RemoteMessage;
+import com.nex3z.notificationbadge.NotificationBadge;
 
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
-     NotificationManager mNotificationManager;
+    int notification_counter = 0;
+    NotificationManager mNotificationManager;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+        notification_counter++;
 
+        //
+        try {
+            Badges.setBadge(this, notification_counter);
+        } catch (BadgesNotSupportedException badgesNotSupportedException) {
+            Log.d("TAG", badgesNotSupportedException.getMessage());
+        }
+        //
 
 // playing audio and vibration when user se reques
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -75,11 +88,11 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         builder.setAutoCancel(true);
         builder.setPriority(Notification.PRIORITY_LOW);
 
-        mNotificationManager =
-                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        //
 
+        //
 
-
+        mNotificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
@@ -94,7 +107,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         // notificationId is a unique int for each notification that you must define
         mNotificationManager.notify(100, builder.build());
-
 
     }
 

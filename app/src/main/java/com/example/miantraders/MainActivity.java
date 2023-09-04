@@ -3,11 +3,17 @@ package com.example.miantraders;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,17 +26,21 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.github.arturogutierrez.Badges;
+import com.github.arturogutierrez.BadgesNotSupportedException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
     FloatingActionButton fab;
     RecyclerView recyclerView;
     List<DataClass> dataList;
@@ -52,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         searchView = findViewById(R.id.search);
         searchView.clearFocus();
         spinner = findViewById(R.id.spinner);
-
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this,1);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -127,8 +136,6 @@ public class MainActivity extends AppCompatActivity {
 
         ////////////Spinner Code Below
         ArrayList<String> spinnerCategory = CategoryManager.getCategoryList(this);
-
-// Check if "All" category is present in the spinnerCategory list
         boolean hasAllCategory = false;
         for (String category : spinnerCategory) {
             if (category.equalsIgnoreCase("All")) {
@@ -136,14 +143,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-
-// If "All" category is not present, add it at position 0
         if (!hasAllCategory) {
             spinnerCategory.add(0, "All");
         }
-
-        //adapterCategory = new ArrayAdapter<String>(this, R.layout.list_category, spinnerCategory);
-        //spinner.setAdapter(adapterCategory);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -233,11 +235,14 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.option_menu_main_activity,menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.notification:
-//                Toast.makeText(this, "Notification Selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Notification Selected", Toast.LENGTH_SHORT).show();
+                Intent intent2 = new Intent(MainActivity.this, activity_notification_message.class);
+                startActivity(intent2);
                 return true;
 
             case R.id.refresh:
@@ -267,4 +272,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 }

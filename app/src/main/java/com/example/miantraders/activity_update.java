@@ -190,13 +190,17 @@ public class activity_update extends AppCompatActivity {
                     updateDataWithoutImage();
                 }
 
-                String title = "ITEM #"+code+" is updated";
+                String title = "ITEM: "+code+" is updated";
                 String body = "Kindly refresh the app to check updated item. Thanks";
                 FcmNotificationsSender notificationsSender = new FcmNotificationsSender( "/topics/all",
                         title,
                         body,
                         getApplicationContext(), activity_update.this);
                 notificationsSender.SendNotifications();
+                //save message to database
+                databaseReference = FirebaseDatabase.getInstance().getReference("Notifications");
+                DatabaseReference newMessageRef = databaseReference.child("messages").child(title);
+                newMessageRef.setValue(title);
             }
         });
 
